@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Core Architecture: A Unified Multi-Sphere Data System - Portfolio</title>
+    
+    <!-- Базовые мета-теги SEO -->
+    <meta name="description" content="Vladimir Shevchenko - Data Analyst & IT Specialist portfolio and resume. Experience in automation, reporting, and risk analytics.">
+    <meta name="author" content="Vladimir Shevchenko">
+
+    <!-- Open Graph (Превью для Telegram, LinkedIn и др.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Core Architecture: A Unified Multi-Sphere Data System">
+    <meta property="og:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta property="og:image" content="../..//assets/about/profile.jpg">
+    <meta property="og:site_name" content="Vladimir Shevchenko Portfolio">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The Core Architecture: A Unified Multi-Sphere Data System">
+    <meta name="twitter:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta name="twitter:image" content="../..//assets/about/profile.jpg">
+
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Стили подсветки синтаксиса и кастомные стили -->
+    <link href="../..//assets/pygments.css" rel="stylesheet">
+    <link href="../..//assets/style.css" rel="stylesheet">
+    
+    <!-- Место для кастомных стилей отдельных страниц -->
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- Динамическое имя в бренде навигационной панели -->
+            <a class="navbar-brand fw-bold" href="../../">Vladimir Shevchenko</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../">Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//it-help">IT Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mb-5">
+        
+
+<div class="row">
+    <!-- Левая колонка: Основной текст статьи (9 колонок) -->
+    <div class="col-12 col-md-9 order-2 order-md-1">
+        <article class="custom-card">
+            <!-- Заголовок страницы -->
+            <h1 class="article-main-title mb-3">The Core Architecture: A Unified Multi-Sphere Data System</h1>
+            <hr class="article-title-divider mb-4">
+            
+            <div class="article-content">
+                <h1 id="introduction-why-existing-tools-lead-to-a-dead-end">Introduction: Why Existing Tools Lead to a Dead End</h1>
+<p>My journey into personal data management has always been guided by one non-negotiable principle: <strong>my data and my knowledge must remain local</strong>. This is precisely why proprietary, cloud-based Swiss Army knives like Notion, Tana, or Asana were ruled out immediately. I demanded absolute control over my data, privacy, and complete independence from third-party servers.<br />
+I dove deep into the world of local-first tools and explored it:</p>
+<ul>
+<li><strong>Obsidian:</strong> Excellent as a personal knowledge base (PKM), but completely helpless when it comes to managing complex tasks or logging finances.  </li>
+<li><strong>Logseq:</strong> A powerful outliner, but bloated with features like Canvas that I simply do not need.  </li>
+<li><strong>Emacs + Org-mode:</strong> A legendary environment that I used for a long time, but one that ultimately requires endless maintenance and a mountain of custom "hacks" just to integrate basic personal workflows.</li>
+</ul>
+<p>Right before implementing my current system, my setup was highly minimalist: the <strong>Helix Editor</strong>, a Markdown LSP, and the <em>Zettelkasten</em> methodology. Yet, even here, I hit a brick wall.</p>
+<h2 id="the-inter-sphere-chasm">The Inter-Sphere Chasm</h2>
+<p>The fatal flaw of almost all ready-made software and plugins is that they force you into a specific silo. You end up with one application for tasks, another for your knowledge base, and perhaps a third for tracking expenses. A massive <strong>chasm</strong> opens up between these spheres. They utilize different data types, different file formats, and completely different interfaces.<br />
+You cannot naturally link a fleeting thought in your daily journal to a concrete task, and then link that task to a financial transaction without losing the chronology and historical context. You waste your energy maintaining integration scripts and wrapping your brain around the artificial constraints of someone else's plugins.<br />
+I realized I didn't need a tool that worked almost the way I wanted. I needed to strip everything back to the absolute basics and understand how information itself is structured at a foundational level.</p>
+<h1 id="the-core-philosophy-what-is-data-really">The Core Philosophy: What is Data, Really?</h1>
+<p>This deep process of rethinking led me to a fundamental conclusion. Regardless of the domain—be it a task, a log entry, a financial receipt, or a project—every piece of information at its bedrock level is an abstract <strong>Core</strong>.<br />
+This concept was first born in my mind as an architectural agreement before ever being translated into relational SQLite tables.<br />
+The Core rests upon one unyielding rule: <strong>information has no essence without a title</strong>. The title is a mandatory distillation—a single, self-contained thought. If a thought begins to branch out and require a complex hierarchy (such as Markdown H2 or H3 headers within the same note), my system triggers an immediate rule: <em>Stop. This is a new thought. Create a separate Core for it and link it to the current one</em></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">-- The foundation of the entire cognitive architecture</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">core</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">sphere</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="c1">-- &#39;todo&#39;, &#39;logs&#39;, &#39;kdb&#39;, &#39;wdb&#39;</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">  </span><span class="c1">-- A mandatory, self-contained thought</span>
+<span class="w">    </span><span class="n">content</span><span class="w"> </span><span class="nb">TEXT</span><span class="w">          </span><span class="c1">-- Optional, flat description</span>
+<span class="p">);</span>
+</code></pre></div>
+
+<p>By removing rigid technical constraints and reducing all data types to a homogenous Core, I gained absolute freedom. However, to prevent this freedom from turning the database into chaos, a strict architectural agreement and an extension system (<strong>Metadata</strong>) were built on top of the Core.</p>
+<h1 id="the-layered-architecture-envelopes-of-meaning">The Layered Architecture: Envelopes of Meaning</h1>
+<p>Instead of separating entities into isolated tables, my architecture acts as a multi-layered atomic structure, where each level wraps and protects the previous one. This encapsulates fluid thinking within strict relational rules.</p>
+<p><img alt="Meta objects" src="../..//assets/../..//assets/meta-objects.svg" /></p>
+<p>Based on the system's structural blueprint, data is organized into three nested levels:</p>
+<h2 id="level-1-base-the-static-nucleus">Level 1: Base (The Static Nucleus)</h2>
+<p>At the absolute center sits the <strong>Base</strong> layer—the indivisible static core of any information. It consists of the <code>Core</code> record itself, bounded seamlessly by <code>Tags</code> and <code>Links</code>. This is the raw data engine. It doesn't care about time, priorities, or projects; it merely holds the core thought and registers its global relationships.</p>
+<h2 id="level-2-logs-the-thinking-envelope">Level 2: Logs (The Thinking Envelope)</h2>
+<p>The Base layer is completely wrapped by <strong>Level 2: Logs</strong>, which acts as the environment for active, chronological thinking.</p>
+<ul>
+<li>It inherits the entire underlying structure of the Base layer (every log entry is inherently a <code>Core</code> object with its own <code>Links</code> and <code>Tags</code>).</li>
+<li>It injects execution state and real-time metadata via <code>Logs (Meta)</code> (timestamps, problem/question statuses).</li>
+</ul>
+<p>This is where the brain reasons, logs history, and processes ongoing context over time.</p>
+<h2 id="level-3-container-the-virtual-isolation-sphere">Level 3: Container (The Virtual Isolation Sphere)</h2>
+<p>The outermost boundary is <strong>Level 3: Container</strong>. Crucially, a Container is a <strong>purely virtual isolating envelope</strong>. It contains no metadata tables of its own. Its sole architectural purpose is to act as a thematic boundary, grouping and isolating specific <code>Core</code> records and <code>Logs</code> within a concrete topic or roadmap.</p>
+<p>When you look at the system through your terminal, you aren't just looking at text; you are peeling back these three conceptual layers from the outer Container down to the central Core.</p>
+<h2 id="how-metadata-extends-the-base">How Metadata Extends the Base</h2>
+<p>A crucial architectural nuance here is that metadata tables (todo_meta, logs_meta, etc.) <strong>extend the entire Base sphere, not just the Core table.</strong><br />
+When I introduce a new domain or sphere, I don't reinvent the wheel. It automatically inherits the full capability of the triad: the power to link to any other object in the system, support for explicit and hidden tags, cascade deletions, and seamless integration into the global graph. Metadata tables merely inject domain-specific attributes (like a task status or a log timestamp) onto a universal base skeleton using shared IDs.</p>
+<p><img alt="Tables graph" src="../..//assets/../..//assets/meta-db-tables.svg" /></p>
+<h1 id="the-link-engine-lazy-searching-via-anchors">The Link Engine: Lazy Searching via Anchors</h1>
+<p>Links within the links table are not merely pointers to another note's ID. They are a precise historical record of <em>where</em> a thought originated and <em>exactly where</em> it landed.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">links</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">source_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">      </span><span class="c1">-- The origin of the thought</span>
+<span class="w">    </span><span class="n">target_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">      </span><span class="c1">-- The destination Core</span>
+<span class="w">    </span><span class="n">target_anchor</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">     </span><span class="c1">-- The text anchor within the target content</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">source_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">core</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">target_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">core</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+</code></pre></div>
+
+<p>When I navigate a link, Python orchestrator completely avoids using complex, fragile UUIDs for individual lines of text. Instead, it relies on a <strong>smart lazy-search algorithm</strong>:</p>
+<ol>
+<li>The script isolates the target object using its target_id.  </li>
+<li>It fetches the target_anchor string and executes a text search strictly within that isolated object.  </li>
+<li><strong>Priority is given to headers:</strong> If the searched keyword appears both in standard paragraph text near the top and inside a Markdown header further down, the algorithm automatically focuses on the header.</li>
+</ol>
+<p>This is entirely logical: if we are referencing a specific concept, it will be designated as a sub-header encapsulating that information in 95% of use cases.</p>
+<h1 id="the-tui-visualizing-thoughts-as-a-git-branch">The TUI: Visualizing Thoughts as a Git Branch</h1>
+<p>I interact with the database exclusively through custom Python scripts. They operate in a Read-Only state when browsing, serving as a highly optimized visual filter, navigator, and search engine.<br />
+The display interface is heavily inspired by the philosophy of <strong>git branch</strong>. Because every entity in the system is homogenous and maps back to the Base architecture, their relationships visualize perfectly as a directed causal tree.<br />
+In its collapsed state ("the bird's-eye view"), the structure is incredibly clean, showing only the titles of the cores:</p>
+<div class="codehilite"><pre><span></span><code>▸ Meta
+├─▸ D2 – tool for create
+└─▸ Portfol
+</code></pre></div>
+
+<p>The triangle (▸) acts as an interactive toggle. I can expand and collapse threads of thought directly in the terminal. When expanded, a Python text-formatting library handles the rich rendering of the Markdown context, turning flat SQLite rows into beautifully formatted terminal prose. It behaves like a standard directory tree or a native git log --graph, where every step down represents a logical continuation of the previous thought.</p>
+<h1 id="the-editing-lifecycle-terminal-editor-and-stage-buffer">The Editing Lifecycle: Terminal Editor and Stage Buffer</h1>
+<p>Because the TUI utilities operate in a Read-Only state, altering data requires a strictly managed pipeline. Direct, unchecked mutation of the database is impossible.<br />
+When I position the cursor over an object in the graph and press Enter, the following pipeline initiates:</p>
+<ol>
+<li><strong>Snapshot Generation:</strong> The script dynamically aggregates data from the core table and its matching _meta table.  </li>
+<li><strong>Export to a Temporary File:</strong> The aggregated data is dumped into a temporary Markdown file.  </li>
+<li><strong>Metadata Injection:</strong> In an elegant UX touch, if the object contains metadata attributes, they are wrapped in curly braces {...} and appended <strong>strictly to the end of the primary title string</strong>.  </li>
+<li><strong>Active Editing:</strong> The file opens natively inside the <strong>Helix Editor</strong>, where a Markdown LSP initializes to provide syntax highlighting and autocomplete. I am free to modify the body text or edit the metadata inside the braces.</li>
+</ol>
+<h2 id="automated-error-prevention-the-stage-buffer">Automated Error Prevention: The Stage Buffer</h2>
+<p>The critical engineering check occurs the moment I save the file and exit the editor (:wq). The Python orchestrator intercepts control and subjects the changes to strict validation rules before committing anything to SQLite:</p>
+<ul>
+<li><strong>Metadata Validation:</strong> If I make a typo inside the curly braces and enter an invalid status (e.g., writing todoo instead of the reserved enum value todo), the database will reject the transaction via a CHECK constraint.  </li>
+<li><strong>Referential Integrity Checks (links):</strong> The script validates that I haven't altered or deleted header text or text blocks that other independent cores point to via a target_anchor.</li>
+</ul>
+<p>If an error or a broken link is discovered, <strong>the script halts the database write operation</strong>. It safely shifts my modifications and the discovered conflicts into an isolated environment in the Python application's memory—the <strong>Stage</strong> (mirroring the staging area in Git).<br />
+An interactive conflict-resolution screen opens up in the terminal, presenting two paths: either correct the broken anchors and malformed metadata to match system agreements, or abort and roll back the edits entirely. The system physically prevents the database from falling into a partially broken state.</p>
+<h1 id="system-linguistics-explicit-hidden-and-contextual-tags">System Linguistics: Explicit, Hidden, and Contextual Tags</h1>
+<p>Classification within this architecture is split across distinct scopes: note-level tags and inline contextual tags. To prevent entity duplication and maintain human-readable text, tags are separated into three categories:</p>
+<h2 id="explicit-tags">Explicit Tags</h2>
+<p>These are written directly within the text of the main title field. They are prefixed with a plus sign. The defining characteristic is that the tag is an organic component of the sentence itself.<br />
+<strong>Example:</strong> Fix the script for auto-rendering and review it with Ivan<br />
+If you strip the words script and Ivan, the sentence loses its structural meaning. The parser extracts these constructions and logs them in the tags table behind the scenes, but they remain perfectly readable as natural human speech within the interface.</p>
+<h2 id="hidden-tags-metadata">Hidden Tags (Metadata)</h2>
+<p>These are tags tied to the note on a global level. They are declared inside the curly braces {...} at the tail of the title during editing. In the primary TUI tree view, they are completely hidden to avoid visual clutter, yet they remain instantly indexable by the search engine.</p>
+<h2 id="contextual-tags-containers-and-logs">Contextual Tags (Containers and Logs)</h2>
+<p>Because complex objects like a Container or a Logs entry contain an internal Markdown layout, tags can be declared at the sub-header level within the content block. They are captured by the parser and registered in the database with their own specific local scope.<br />
+<strong>Typo Prevention:</strong> To completely eliminate spelling errors when creating global tags, a helper script queries the SQLite database, compiles a list of all existing unique tags, and provides an autocomplete menu directly under the cursor inside the Helix Editor.</p>
+<h1 id="conclusion-and-future-roadmap">Conclusion and Future Roadmap</h1>
+<p>Designing this architecture did not begin with writing lines of code; it began with deep conceptual modeling in the mind. Treating information as an atomic, baseline Core extended via strict relational metadata allowed me to completely erase the artificial boundaries between different areas of life.<br />
+Currently, the system fully handles my knowledge base (KDB), personal software projects (Prj), web research bookmarks (WDB), daily logs (Logs), and task management (Todo).<br />
+<strong>The Immediate Roadmap:</strong></p>
+<ul>
+<li><strong>The Fin Sphere:</strong> Extending the Base triad with a fin_meta table to seamlessly link cohesive life chains: <em>Cognitive log brainstorming a purchase → A task tracking the research → The final financial transaction ledger entry.</em>  </li>
+<li><strong>Portfolio Automation:</strong> Merging the project sphere with a script that automatically parses finalized technical documentation and deploys it directly to my public portfolio website.</li>
+</ul>
+<p>This setup has proven that the strict boundaries of a relational database and the fluid creative freedom of flat Markdown text are not just compatible—they form a spectacular synergy for human thought.</p>
+            </div>
+        </article>
+    </div>
+
+    <!-- Правая колонка: Компактное Git-Branch оглавление (3 колонки) -->
+    <div class="col-12 col-md-3 order-1 order-md-2 mb-4">
+        <div class="toc-sidebar custom-card">
+            <!-- Блок-якорь оглавления -->
+            <div class="toc-title"><i class="bi bi-list-nested me-2"></i>On This Page</div>
+            
+            <!-- Выводим рекурсивное иерархическое дерево оглавления -->
+            <div class="toc">
+<ul>
+<li><a href="#introduction-why-existing-tools-lead-to-a-dead-end">Introduction: Why Existing Tools Lead to a Dead End</a><ul>
+<li><a href="#the-inter-sphere-chasm">The Inter-Sphere Chasm</a></li>
+</ul>
+</li>
+<li><a href="#the-core-philosophy-what-is-data-really">The Core Philosophy: What is Data, Really?</a></li>
+<li><a href="#the-layered-architecture-envelopes-of-meaning">The Layered Architecture: Envelopes of Meaning</a><ul>
+<li><a href="#level-1-base-the-static-nucleus">Level 1: Base (The Static Nucleus)</a></li>
+<li><a href="#level-2-logs-the-thinking-envelope">Level 2: Logs (The Thinking Envelope)</a></li>
+<li><a href="#level-3-container-the-virtual-isolation-sphere">Level 3: Container (The Virtual Isolation Sphere)</a></li>
+<li><a href="#how-metadata-extends-the-base">How Metadata Extends the Base</a></li>
+</ul>
+</li>
+<li><a href="#the-link-engine-lazy-searching-via-anchors">The Link Engine: Lazy Searching via Anchors</a></li>
+<li><a href="#the-tui-visualizing-thoughts-as-a-git-branch">The TUI: Visualizing Thoughts as a Git Branch</a></li>
+<li><a href="#the-editing-lifecycle-terminal-editor-and-stage-buffer">The Editing Lifecycle: Terminal Editor and Stage Buffer</a><ul>
+<li><a href="#automated-error-prevention-the-stage-buffer">Automated Error Prevention: The Stage Buffer</a></li>
+</ul>
+</li>
+<li><a href="#system-linguistics-explicit-hidden-and-contextual-tags">System Linguistics: Explicit, Hidden, and Contextual Tags</a><ul>
+<li><a href="#explicit-tags">Explicit Tags</a></li>
+<li><a href="#hidden-tags-metadata">Hidden Tags (Metadata)</a></li>
+<li><a href="#contextual-tags-containers-and-logs">Contextual Tags (Containers and Logs)</a></li>
+</ul>
+</li>
+<li><a href="#conclusion-and-future-roadmap">Conclusion and Future Roadmap</a></li>
+</ul>
+</div>
+
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Динамическое имя в футере -->
+    <footer class="text-center text-muted py-4 border-top mt-5 bg-white">
+        <p class="mb-0">© 2026 Vladimir Shevchenko. Built with Python & SQLite.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Место для кастомных скриптов отдельных страниц -->
+    
+</body>
+</html>

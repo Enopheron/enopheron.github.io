@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects &amp; Publications - Portfolio</title>
+    
+    <!-- Базовые мета-теги SEO -->
+    <meta name="description" content="Vladimir Shevchenko - Data Analyst & IT Specialist portfolio and resume. Experience in automation, reporting, and risk analytics.">
+    <meta name="author" content="Vladimir Shevchenko">
+
+    <!-- Open Graph (Превью для Telegram, LinkedIn и др.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Projects &amp; Publications">
+    <meta property="og:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta property="og:image" content="..//assets/about/profile.jpg">
+    <meta property="og:site_name" content="Vladimir Shevchenko Portfolio">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Projects &amp; Publications">
+    <meta name="twitter:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta name="twitter:image" content="..//assets/about/profile.jpg">
+
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Стили подсветки синтаксиса и кастомные стили -->
+    <link href="..//assets/pygments.css" rel="stylesheet">
+    <link href="..//assets/style.css" rel="stylesheet">
+    
+    <!-- Место для кастомных стилей отдельных страниц -->
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- Динамическое имя в бренде навигационной панели -->
+            <a class="navbar-brand fw-bold" href="../">Vladimir Shevchenko</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../">Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="..//projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="..//it-help">IT Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mb-5">
+        
+
+<div class="row">
+    <!-- Левая колонка: Список проектов (8 колонок) -->
+    <div class="col-12 col-md-8 order-2 order-md-1">
+        
+        <!-- Заголовок хаба -->
+        <div class="mb-4">
+            <h1 class="fw-bold text-dark"><i class="bi bi-folder2-open me-2 text-secondary"></i>Projects & Publications</h1>
+            <p class="text-muted">Explore automated solutions, data analytics, and IT infrastructure use-cases.</p>
+        </div>
+
+        <!-- Поисковая строка -->
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-input" class="form-control border-start-0 ps-0" placeholder="Search projects by title..." onkeyup="filterProjects()">
+            </div>
+        </div>
+
+        <!-- Список проектов -->
+        <div id="projects-list" class="mt-4">
+            
+                <!-- Каждому проекту в дата-атрибуты записываем его заголовок и теги для быстрого JS-поиска -->
+                <div class="custom-card project-card" data-title="the core architecture: a unified multi-sphere data system" data-tags="pkm,python,sqlite">
+                    <h3 class="fw-bold text-dark mb-2">The Core Architecture: A Unified Multi-Sphere Data System</h3>
+                    
+                    <!-- Рендерим теги проекта -->
+                    
+                    <div class="mb-3">
+                        
+                            <span class="tech-badge">pkm</span>
+                        
+                            <span class="tech-badge">python</span>
+                        
+                            <span class="tech-badge">sqlite</span>
+                        
+                    </div>
+                    
+                    
+                    <p class="text-muted mb-3">My journey into personal data management has always been guided by one non-negotiable principle: my data and my knowledge must remain local. This is precisely why proprietary, cloud-based Swiss Army knives like Notion, Tana, or Asana were ruled out i...</p>
+                    
+                    <a href="..//prj/git-driven-thinking-how-i-engineered-a-custom-knowledge-base-on-sqlite-and-python" class="btn btn-sm btn-outline-dark rounded-pill">Read Article →</a>
+                </div>
+            
+                <!-- Каждому проекту в дата-атрибуты записываем его заголовок и теги для быстрого JS-поиска -->
+                <div class="custom-card project-card" data-title="todo-tree-view" data-tags="python,todo,tui">
+                    <h3 class="fw-bold text-dark mb-2">Todo-tree-view</h3>
+                    
+                    <!-- Рендерим теги проекта -->
+                    
+                    <div class="mb-3">
+                        
+                            <span class="tech-badge">python</span>
+                        
+                            <span class="tech-badge">todo</span>
+                        
+                            <span class="tech-badge">tui</span>
+                        
+                    </div>
+                    
+                    
+                    <p class="text-muted mb-3">When your task list grows into a multi-level hierarchy with dependencies, notes, and links, a plain text file becomes unwieldy. Sure, you could open it in an editor, search for link:, jump between files—but that&#39;s exhausting. What you really want is ...</p>
+                    
+                    <a href="..//prj/todo-tree-view" class="btn btn-sm btn-outline-dark rounded-pill">Read Article →</a>
+                </div>
+            
+                <!-- Каждому проекту в дата-атрибуты записываем его заголовок и теги для быстрого JS-поиска -->
+                <div class="custom-card project-card" data-title="extract information about vacancies" data-tags="python">
+                    <h3 class="fw-bold text-dark mb-2">Extract information about vacancies</h3>
+                    
+                    <!-- Рендерим теги проекта -->
+                    
+                    <div class="mb-3">
+                        
+                            <span class="tech-badge">python</span>
+                        
+                    </div>
+                    
+                    
+                    <p class="text-muted mb-3">This code demonstrates how to programmatically extract information about job vacancies from hh.ru. The script scans the primary search results page, iterates through aggregated vacancies, navigates to each individual job posting, and selectively extr...</p>
+                    
+                    <a href="..//prj/extract-information-about-vacancies" class="btn btn-sm btn-outline-dark rounded-pill">Read Article →</a>
+                </div>
+            
+        </div>
+
+    </div>
+
+    <!-- Правая колонка: Панель фильтрации по тегам (4 колонки) -->
+    <div class="col-12 col-md-4 order-1 order-md-2 mb-4">
+        <div class="filter-sidebar custom-card">
+            <div class="filter-title"><i class="bi bi-tags-fill me-2"></i>Filter by Tags</div>
+            
+            <!-- Облако тегов (кнопки) -->
+            <div id="tag-cloud">
+                
+                    <button class="tag-button" data-tag="pkm" onclick="toggleTagFilter('pkm')">pkm</button>
+                
+                    <button class="tag-button" data-tag="python" onclick="toggleTagFilter('python')">python</button>
+                
+                    <button class="tag-button" data-tag="sqlite" onclick="toggleTagFilter('sqlite')">sqlite</button>
+                
+                    <button class="tag-button" data-tag="todo" onclick="toggleTagFilter('todo')">todo</button>
+                
+                    <button class="tag-button" data-tag="tui" onclick="toggleTagFilter('tui')">tui</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Легковесный нативный JavaScript для мгновенного поиска и фильтрации -->
+<script>
+    let activeTags = new Set(); // Используем Set для хранения нескольких активных тегов
+
+    function filterProjects() {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const cards = document.querySelectorAll('.project-card');
+        
+        cards.forEach(card => {
+            const title = card.getAttribute('data-title');
+            const projectTags = card.getAttribute('data-tags').split(',').filter(t => t); // Фильтруем пустые теги
+            
+            const matchesSearch = title.includes(query);
+            
+            // Если нет активных тегов, все проекты подходят по тегам
+            // Иначе, проект должен содержать ХОТЯ БЫ ОДИН из активных тегов
+            const matchesTags = activeTags.size === 0 || projectTags.some(tag => activeTags.has(tag));
+            
+            if (matchesSearch && matchesTags) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function toggleTagFilter(tag) {
+        const button = document.querySelector(`.tag-button[data-tag="${tag}"]`);
+        
+        if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+            button.classList.remove('active');
+        } else {
+            activeTags.add(tag);
+            button.classList.add('active');
+        }
+        filterProjects(); // Перезапускаем фильтрацию с новыми активными тегами
+    }
+</script>
+
+    </main>
+
+    <!-- Динамическое имя в футере -->
+    <footer class="text-center text-muted py-4 border-top mt-5 bg-white">
+        <p class="mb-0">© 2026 Vladimir Shevchenko. Built with Python & SQLite.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Место для кастомных скриптов отдельных страниц -->
+    
+</body>
+</html>

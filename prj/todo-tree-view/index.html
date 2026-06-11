@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo-tree-view - Portfolio</title>
+    
+    <!-- Базовые мета-теги SEO -->
+    <meta name="description" content="Vladimir Shevchenko - Data Analyst & IT Specialist portfolio and resume. Experience in automation, reporting, and risk analytics.">
+    <meta name="author" content="Vladimir Shevchenko">
+
+    <!-- Open Graph (Превью для Telegram, LinkedIn и др.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Todo-tree-view">
+    <meta property="og:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta property="og:image" content="../..//assets/about/profile.jpg">
+    <meta property="og:site_name" content="Vladimir Shevchenko Portfolio">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Todo-tree-view">
+    <meta name="twitter:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta name="twitter:image" content="../..//assets/about/profile.jpg">
+
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Стили подсветки синтаксиса и кастомные стили -->
+    <link href="../..//assets/pygments.css" rel="stylesheet">
+    <link href="../..//assets/style.css" rel="stylesheet">
+    
+    <!-- Место для кастомных стилей отдельных страниц -->
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- Динамическое имя в бренде навигационной панели -->
+            <a class="navbar-brand fw-bold" href="../../">Vladimir Shevchenko</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../">Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//it-help">IT Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mb-5">
+        
+
+<div class="row">
+    <!-- Левая колонка: Основной текст статьи (9 колонок) -->
+    <div class="col-12 col-md-9 order-2 order-md-1">
+        <article class="custom-card">
+            <!-- Заголовок страницы -->
+            <h1 class="article-main-title mb-3">Todo-tree-view</h1>
+            <hr class="article-title-divider mb-4">
+            
+            <div class="article-content">
+                <p>When your task list grows into a multi-level hierarchy with dependencies, notes, and links, a plain text file becomes unwieldy. Sure, you could open it in an editor, search for <code>link:</code>, jump between files—but that's exhausting. What you really want is to <strong>see the whole structure at once</strong>: who depends on whom, which tasks are connected, where the priorities lie.</p>
+<h1 id="why-this-matters">Why This Matters</h1>
+<p><code>show-links.py</code> is an interactive TUI visualizer for todo.txt that displays tasks as a dependency tree, filters by status, context, and tags, and integrates with markdown notes. Think of it as a file manager for tasks—quick navigation through the hierarchy, seeing the big picture, and editing what you need with a single keystroke.</p>
+<h1 id="data-architecture">Data Architecture</h1>
+<p>The foundation rests on two key structures: <strong>Task</strong> and <strong>RNote</strong>.</p>
+<h2 id="task-the-task-model">Task — The Task Model</h2>
+<p>Each line in <code>todo.txt</code> gets parsed into a Task object:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Task</span><span class="p">:</span>
+    <span class="n">line_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">;</span> <span class="n">raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">;</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">done</span><span class="p">:</span>     <span class="nb">bool</span>          <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">priority</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tid</span><span class="p">:</span>      <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (1)</span>
+    <span class="n">status</span><span class="p">:</span>   <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (2)</span>
+    <span class="n">link</span><span class="p">:</span>     <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (3)</span>
+    <span class="n">ttype</span><span class="p">:</span>    <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (4)</span>
+    <span class="n">tags</span><span class="p">:</span>     <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>     <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># (5)</span>
+    <span class="n">tags_lc</span><span class="p">:</span>  <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>      <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">set</span><span class="p">)</span>   <span class="c1"># (6)</span>
+    <span class="n">ctx</span><span class="p">:</span>      <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (7)</span>
+    <span class="n">due</span><span class="p">:</span>      <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># (8)</span>
+    <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">notes</span><span class="p">:</span>    <span class="n">List</span><span class="p">[</span><span class="n">RNote</span><span class="p">]</span>   <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+</code></pre></div>
+
+<ol>
+<li>Unique task identifier (e.g., <code>id:some_task</code>)</li>
+<li>Current status: <code>run</code>, <code>hold</code>, <code>idea</code>, <code>todo</code></li>
+<li>Link to parent task for dependency chain</li>
+<li>Task type: <code>dev</code>, <code>bug</code>, <code>feature</code>, etc.</li>
+<li>Tags for categorization like <code>project</code>, <code>urgent</code></li>
+<li>Lowercase cache for case-insensitive search</li>
+<li>Context marker like <code>@home</code>, <code>@work</code></li>
+<li>Due date in ISO format <code>2024-03-15</code></li>
+</ol>
+<p><strong>Interesting detail</strong>: tags are stored in two formats—both the original list and a lowercase cache. This enables case-insensitive search without repeated conversions.</p>
+<p>Parsing happens via regex patterns that extract metadata directly from the task text:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">_RE_PRIORITY</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\(([A-Z])\)&quot;</span><span class="p">)</span>      <span class="c1"># (1)</span>
+<span class="n">_RE_TASK_ID</span>  <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;id:(\S+)&quot;</span><span class="p">)</span>         <span class="c1"># (2)</span>
+<span class="n">_RE_LINK</span>     <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;link:(\S+)&quot;</span><span class="p">)</span>       <span class="c1"># (3)</span>
+<span class="n">_RE_STATUS</span>   <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;st:(\S+)&quot;</span><span class="p">)</span>         <span class="c1"># (4)</span>
+<span class="n">_RE_DUE</span>      <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;due:([\d-]+)&quot;</span><span class="p">)</span>     <span class="c1"># (5)</span>
+</code></pre></div>
+
+<ol>
+<li>Captures priority in format <code>(A)</code>, <code>(B)</code>, <code>(C)</code></li>
+<li>Extracts unique task ID</li>
+<li>Finds link to parent task</li>
+<li>Determines current status (run/hold/idea)</li>
+<li>Parses ISO date format for deadlines</li>
+</ol>
+<h2 id="rnote-note-hierarchy">RNote — Note Hierarchy</h2>
+<p>Markdown notes are parsed into a tree structure based on heading levels:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RNote</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ntype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># (1)</span>
+    <span class="n">date</span><span class="p">:</span>  <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># (2)</span>
+    <span class="n">nid</span><span class="p">:</span>   <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># (3)</span>
+    <span class="n">link</span><span class="p">:</span>  <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># (4)</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>            <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">line_num</span><span class="p">:</span> <span class="nb">int</span>         <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">content</span><span class="p">:</span>  <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">content_lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;RNote&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># (5)</span>
+</code></pre></div>
+
+<ol>
+<li>Note type: <code>OBS</code> (observation), <code>HYP</code> (hypothesis), <code>DO</code> (action)</li>
+<li>Date the note was created</li>
+<li>Optional note identifier for cross-referencing</li>
+<li>Link to parent note for hierarchy</li>
+<li>Child notes form the tree structure</li>
+</ol>
+<p>The parser builds notes using a <strong>stack approach</strong> — a classic technique for building a tree from a flat list:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_notes</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RNote</span><span class="p">]:</span>
+    <span class="n">notes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RNote</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span> <span class="n">stack</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RNote</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># (1)</span>
+
+    <span class="k">for</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">hm</span> <span class="o">=</span> <span class="n">_RE_HEADER</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>  <span class="c1"># (2)</span>
+        <span class="k">if</span> <span class="n">hm</span><span class="p">:</span>
+            <span class="n">lv</span><span class="p">,</span> <span class="n">raw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="n">hm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># (3)</span>
+
+            <span class="c1"># Collapse stack to appropriate level</span>
+            <span class="k">while</span> <span class="n">stack</span> <span class="ow">and</span> <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;=</span> <span class="n">lv</span><span class="p">:</span>  <span class="c1"># (4)</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+            <span class="n">note</span> <span class="o">=</span> <span class="n">RNote</span><span class="p">(</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">level</span><span class="o">=</span><span class="n">lv</span><span class="p">,</span>
+                <span class="n">ntype</span><span class="o">=</span><span class="n">_ex</span><span class="p">(</span><span class="n">_RE_TYPE</span><span class="p">,</span> <span class="n">raw</span><span class="p">),</span>
+                <span class="n">date</span><span class="o">=</span><span class="n">_ex</span><span class="p">(</span><span class="n">_RE_NDATE</span><span class="p">,</span> <span class="n">raw</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">stack</span><span class="p">:</span>  <span class="c1"># (5)</span>
+                <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>      <span class="c1"># (6)</span>
+                <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
+
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>  <span class="c1"># (7)</span>
+</code></pre></div>
+
+<ol>
+<li>Initialize empty notes list and stack for hierarchy</li>
+<li>Find markdown headings (##, ###, etc.)</li>
+<li>Count <code>#</code> symbols to determine nesting level</li>
+<li>Pop stack until we reach appropriate parent level</li>
+<li>If stack exists, add as child to current parent</li>
+<li>Otherwise, this is a root-level note</li>
+<li>Push current note onto stack for next iteration</li>
+</ol>
+<p>The stack maintains the "path" from root to current element, automatically handling arbitrary nesting depths.</p>
+<h2 id="dependency-graph">Dependency Graph</h2>
+<p>After parsing all tasks and notes, a dependency graph is built via <code>link:</code> fields:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_graph</span><span class="p">(</span><span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Task</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="n">id2t</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="o">.</span><span class="n">tid</span><span class="p">:</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">tid</span><span class="p">}</span>  <span class="c1"># (1)</span>
+    <span class="n">c2p</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># child_id -&gt; parent_id          # (2)</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">link</span> <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">link</span> <span class="ow">in</span> <span class="n">id2t</span><span class="p">:</span>          <span class="c1"># (3)</span>
+            <span class="n">c2p</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">link</span>
+
+    <span class="k">return</span> <span class="n">id2t</span><span class="p">,</span> <span class="n">c2p</span>
+</code></pre></div>
+
+<ol>
+<li>Build lookup table: task ID → Task object</li>
+<li>Build parent mapping: child ID → parent ID</li>
+<li>Only add link if parent task actually exists</li>
+</ol>
+<p>Now you can build the task tree: if a task has <code>link:parent_task</code>, it becomes a child of <code>parent_task</code>.</p>
+<h1 id="visualization-two-modes">Visualization: Two Modes</h1>
+<p>The script supports two display modes — <strong>Tree</strong> (hierarchical) and <strong>Day</strong> (by date).</p>
+<h2 id="tree-mode">Tree Mode</h2>
+<p><img alt="Tree" src="../..//assets/../..//assets/todo-tree-view/tree.avif" /></p>
+<p>Tree view is built recursively:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Task</span><span class="p">],</span> <span class="n">id2t</span><span class="p">,</span> <span class="n">c2p</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
+    <span class="c1"># Find root tasks (those without parents)</span>
+    <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">tid</span> <span class="ow">or</span> <span class="n">t</span><span class="o">.</span><span class="n">tid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c2p</span><span class="p">]</span>                <span class="c1"># (1)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_tree</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>                                         <span class="c1"># (2)</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">id2t</span><span class="p">[</span><span class="n">cid</span><span class="p">]</span> <span class="k">for</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">c2p</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">pid</span> <span class="o">==</span> <span class="n">task</span><span class="o">.</span><span class="n">tid</span><span class="p">]</span>  <span class="c1"># (3)</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
+            <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">make_tree</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">children</span><span class="p">],</span>                         <span class="c1"># (4)</span>
+            <span class="n">notes</span><span class="o">=</span><span class="p">[</span><span class="n">make_tree_note</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">task</span><span class="o">.</span><span class="n">notes</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">make_tree</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">]</span>                                       <span class="c1"># (5)</span>
+</code></pre></div>
+
+<ol>
+<li>Root tasks have no parent (not in child→parent mapping)</li>
+<li>Recursive function to build tree from task</li>
+<li>Find all tasks that link to current task</li>
+<li>Recursively build child nodes</li>
+<li>Build forest (multiple root trees)</li>
+</ol>
+<p>The tree is displayed with indentation and symbols:</p>
+<div class="codehilite"><pre><span></span><code>├─ (A) Write article  st:run  @home  due:15.03
+│  ├─ Gather references  st:todo
+│  └─ Prepare code  st:hold
+└─ Submit PR  st:idea
+</code></pre></div>
+
+<h2 id="day-mode">Day Mode</h2>
+<p><img alt="Day" src="../..//assets/../..//assets/todo-tree-view/day.avif" /></p>
+<p>In Day mode, tasks are grouped by date and status:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_day_view</span><span class="p">(</span><span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Task</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DayGroup</span><span class="p">]:</span>
+    <span class="c1"># Group by date: overdue / today / future</span>
+    <span class="n">overdue</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="n">is_overdue</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">due</span><span class="p">)]</span>  <span class="c1"># (1)</span>
+    <span class="n">today</span>   <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="n">Tento</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="n">is_today</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">due</span><span class="p">)]</span>  <span class="c1"># (2)</span>
+    <span class="n">future</span>  <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="n">is_future</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">due</span><span class="p">)]</span>   <span class="c1"># (3)</span>
+
+    <span class="c1"># Within groups, sort by priority and status</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">DayGroup</span><span class="p">(</span><span class="s2">&quot;Overdue&quot;</span><span class="p">,</span> <span class="n">overdue</span><span class="p">),</span>
+        <span class="n">DayGroup</span><span class="p">(</span><span class="s2">&quot;Today&quot;</span><span class="p">,</span> <span class="n">today</span><span class="p">),</span>
+        <span class="n">DayGroup</span><span class="p">(</span><span class="s2">&quot;Upcoming&quot;</span><span class="p">,</span> <span class="n">future</span><span class="p">)</span>
+    <span class="p">]</span>
+</code></pre></div>
+
+<ol>
+<li>Tasks past their due date</li>
+<li>Tasks due today</li>
+<li>Tasks due in the future</li>
+</ol>
+<p>This is useful for planning — you can see what's burning, what needs attention today, and what's coming up.</p>
+<h1 id="color-palette-and-rich">Color Palette and Rich</h1>
+<p>All output is implemented via the <strong>Rich</strong> library, which enables beautiful terminal UI.</p>
+<h2 id="color-scheme">Color Scheme</h2>
+<p>Colors are centrally defined:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">C</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">red</span><span class="o">=</span><span class="s2">&quot;#d78787&quot;</span><span class="p">,</span> <span class="n">blue</span><span class="o">=</span><span class="s2">&quot;#87afd7&quot;</span><span class="p">,</span> <span class="n">yellow</span><span class="o">=</span><span class="s2">&quot;#d7af87&quot;</span><span class="p">,</span> <span class="n">green</span><span class="o">=</span><span class="s2">&quot;#87af87&quot;</span><span class="p">,</span>  <span class="c1"># (1)</span>
+    <span class="n">mag</span><span class="o">=</span><span class="s2">&quot;#af87af&quot;</span><span class="p">,</span> <span class="n">cyan</span><span class="o">=</span><span class="s2">&quot;#7aafaf&quot;</span><span class="p">,</span> <span class="n">gray</span><span class="o">=</span><span class="s2">&quot;#8a8a8a&quot;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;#585858&quot;</span><span class="p">,</span>
+    <span class="n">orange</span><span class="o">=</span><span class="s2">&quot;#af875f&quot;</span><span class="p">,</span> <span class="n">white</span><span class="o">=</span><span class="s2">&quot;#c6c6c6&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;#818181&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">PRIO</span>  <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">],</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;sep&quot;</span><span class="p">]}</span>             <span class="c1"># (2)</span>
+<span class="n">STAT</span>  <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;idea&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;yellow&quot;</span><span class="p">],</span> <span class="s2">&quot;todo&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;dim&quot;</span><span class="p">],</span> <span class="s2">&quot;run&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">],</span>  <span class="c1"># (3)</span>
+         <span class="s2">&quot;hold&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;orange&quot;</span><span class="p">],</span>  <span class="s2">&quot;lock&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">]}</span>
+</code></pre></div>
+
+<ol>
+<li>Base color palette inspired by terminal themes</li>
+<li>Priority levels: A (high/red), B (medium/blue), C (low/gray)</li>
+<li>Status colors: idea (yellow), active (blue), blocked (red)</li>
+</ol>
+<p>Each priority, status, and note type gets its own color for instant visual distinction.</p>
+<h2 id="rendering-with-tag-highlighting">Rendering with Tag Highlighting</h2>
+<p>Tags in task titles are highlighted separately:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_title_text</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">_RE_TAG_PAT</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>  <span class="c1"># (1)</span>
+        <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">tag_col</span> <span class="k">if</span> <span class="n">_RE_TAG_PAT</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">else</span> <span class="n">text_col</span><span class="p">)</span>  <span class="c1"># (2)</span>
+    <span class="k">return</span> <span class="n">tx</span>
+</code></pre></div>
+
+<ol>
+<li>Split title on tag boundaries (e.g., <code>urgent</code>)</li>
+<li>Apply tag color to tags, text color to everything else</li>
+</ol>
+<p>If the title contains <code>urgent</code>, it will be highlighted in the tag color while the rest uses the task's main color.</p>
+<h2 id="markdown-in-notes">Markdown in Notes</h2>
+<p>Notes support basic markdown formatting — <strong>bold</strong>, <em>italic</em>, and <code>code</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_md_text</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span> <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_RE_MD</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>  <span class="c1"># (1)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">pos</span><span class="p">:</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()],</span> <span class="n">style</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>   <span class="c1"># (2)</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base</span><span class="si">}</span><span class="s2"> bold&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># (3)</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;dim&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> italic&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>                        <span class="c1"># (4)</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;dim&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> on #303030&quot;</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+</code></pre></div>
+
+<ol>
+<li>Find markdown patterns: <code>**text**</code>, <code>*text*</code>, <code>`text`</code></li>
+<li>Double asterisks = bold</li>
+<li>Single asterisks = italic</li>
+<li>Backticks = code with dark background</li>
+</ol>
+<p>This allows readable notes right in the terminal.</p>
+<h1 id="navigation-and-control">Navigation and Control</h1>
+<p>The entire interface is keyboard-driven, making it fast for power users.</p>
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
+<div class="codehilite"><pre><span></span><code>↑ ↓        navigation
+→ / space  expand / collapse node
+←          collapse / go to parent
+v          switch view (Tree ↔ Day)
+f          search (text) / goto branch (digits)
+l n d c    toggles (linked/nonotes/done/content)
+s @ +      filters (status/context/tags)
+enter      open in $EDITOR
+ctrl+enter open task note
+r          build branch from line
+esc        reset filters
+q          quit
+</code></pre></div>
+
+<h2 id="key-reading">Key Reading</h2>
+<p>Key reading is implemented via low-level <code>termios</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">read_key</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+    <span class="n">old_settings</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>  <span class="c1"># (1)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tty</span><span class="o">.</span><span class="n">setraw</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>  <span class="c1"># (2)</span>
+
+        <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mf">0.1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># (3)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Recognize escape sequences</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># (4)</span>
+                <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mf">0.1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">ch2</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ch2</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>
+                        <span class="n">ch3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="s2">&quot;down&quot;</span><span class="p">,</span> 
+                                <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">}[</span><span class="n">ch3</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;q&quot;</span><span class="p">:</span> <span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;enter&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\x7f</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;backspace&quot;</span><span class="p">}[</span><span class="n">ch</span><span class="p">]</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">old_settings</span><span class="p">)</span>  <span class="c1"># (5)</span>
+</code></pre></div>
+
+<ol>
+<li>Save current terminal settings</li>
+<li>Enter raw mode (no line buffering)</li>
+<li>Non-blocking check for input with 0.1s timeout</li>
+<li>Escape sequences for arrow keys</li>
+<li>Restore original terminal settings</li>
+</ol>
+<p>This captures arrows, Enter, Backspace, and special combinations like Ctrl+Enter.</p>
+<h1 id="filtering-and-search">Filtering and Search</h1>
+<p>One of the most powerful features is the filtering system.</p>
+<h2 id="text-search">Text Search</h2>
+<p>Search works in real-time the tree rebuilds with each character:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_apply_search</span><span class="p">(</span><span class="n">st</span><span class="p">:</span> <span class="n">St</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">input_buf</span>
+
+    <span class="c1"># If only digits entered — goto task by line number</span>
+    <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">buf</span><span class="p">:</span>  <span class="c1"># (1)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">ln2t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">root_tid</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">tid</span> <span class="k">if</span> <span class="n">target</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">flt_search</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># (2)</span>
+        <span class="c1"># Text search in titles</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">flt_search</span> <span class="o">=</span> <span class="n">buf</span>
+
+    <span class="n">do_rebuild</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  <span class="c1"># (3)</span>
+</code></pre></div>
+
+<ol>
+<li>Numeric input = jump to line number</li>
+<li>Text input = filter by title content</li>
+<li>Rebuild entire tree with new filter</li>
+</ol>
+<h2 id="building-branch-from-line">Building Branch from Line</h2>
+<p>"Goto" mode lets you enter a line number and build the tree from that task:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">input_buf</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">ln2t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">input_buf</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">target</span><span class="p">:</span>
+        <span class="c1"># Find branch root (walk up parents)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="p">{</span><span class="n">target</span><span class="o">.</span><span class="n">tid</span><span class="p">}</span>  <span class="c1"># (1)</span>
+        <span class="k">while</span> <span class="n">root</span><span class="o">.</span><span class="n">tid</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">c2p</span><span class="p">:</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">c2p</span><span class="p">[</span><span class="n">root</span><span class="o">.</span><span class="n">tid</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>  <span class="c1"># (2)</span>
+                <span class="k">break</span>  <span class="c1"># cycle detected!</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">id2t</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">root_tid</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">tid</span>
+        <span class="n">do_rebuild</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+</code></pre></div>
+
+<ol>
+<li>Track visited task IDs</li>
+<li>Break if we encounter a cycle (A → B → C → A)</li>
+</ol>
+<p>This is very convenient for focusing on a specific subtask and all its dependencies.</p>
+<h1 id="interesting-technical-details">Interesting Technical Details</h1>
+<h2 id="tree-flattening-for-display">Tree Flattening for Display</h2>
+<p>The tree structure is rendered through "flattening" — converting the tree into a flat list with parent indices:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlatItem</span><span class="p">:</span>
+    <span class="n">node</span><span class="p">:</span> <span class="n">Node</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># (1)</span>
+    <span class="n">parent_idx</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># (2)</span>
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>       <span class="c1"># (3)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">roots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">FlatItem</span><span class="p">]:</span>
+    <span class="n">flat</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlatItem</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">walk</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
+        <span class="n">flat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FlatItem</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">parent_idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">expanded</span><span class="p">:</span>  <span class="c1"># (4)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">walk</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+        <span class="n">walk</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (5)</span>
+
+    <span class="k">return</span> <span class="n">flat</span>
+</code></pre></div>
+
+<ol>
+<li>Indentation level for rendering</li>
+<li>Index of parent in flat list (-1 for roots)</li>
+<li>Own index in flat list</li>
+<li>Only recurse into expanded nodes</li>
+<li>Roots have depth 0, no parent</li>
+</ol>
+<p>This enables:</p>
+<ul>
+<li>List display with scrolling (cursor = index in <code>flat</code>)</li>
+<li>Quick parent lookup via <code>parent_idx</code></li>
+<li>Easy node expand/collapse</li>
+</ul>
+<h2 id="handling-ansi-codes">Handling ANSI Codes</h2>
+<p>Rich generates ANSI escape codes for colors. When calculating string widths, these need to be ignored:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">_RE_ANSI</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\x1b\[[0-9;]*m&quot;</span><span class="p">)</span>  <span class="c1"># (1)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_vlen</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Visual length of string (excluding ANSI codes)&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">_RE_ANSI</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>  <span class="c1"># (2)</span>
+</code></pre></div>
+
+<ol>
+<li>Pattern for ANSI escape sequences</li>
+<li>Strip ANSI codes before counting characters</li>
+</ol>
+<p>Without this, colored strings would be counted as longer than they appear in the terminal.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p><code>show-links.py</code> transforms flat todo.txt into an interactive dependency graph with fast navigation and powerful filtering. It's a great example of how you can take a simple text format and add rich visualization without abandoning its advantages (plain text, version control, grep-friendly).</p>
+<p><strong>Key features:</strong></p>
+<ul>
+<li>Tree visualization — task relationships are immediately visible</li>
+<li>Two display modes — Tree for structure, Day for planning</li>
+<li>Powerful filtering — by status, context, tags, text search</li>
+<li>Editor integration — one click to edit task or note</li>
+<li>Color coding — priorities and statuses are instantly distinguishable</li>
+<li>Fast navigation — all keyboard-driven, no mouse needed</li>
+</ul>
+<p><strong>Interesting patterns demonstrated:</strong></p>
+<ul>
+<li>Building a tree from a flat list via stack</li>
+<li>Tree flattening for scrollable display</li>
+<li>Low-level key reading via <code>termios</code></li>
+<li>Rendering accounting for ANSI escape codes</li>
+<li>Cycle protection in dependency graphs</li>
+</ul>
+<p>This approach can be applied to any data with tree structure — git commits, directory structures, mind maps, dependency graphs</p>
+<blockquote>
+<p><strong>📥 Download:</strong><br />
+<a href="../..//assets/todo-tree-view/show-links.py">show-links.py</a> — Full Python script (1235 lines)<br />
+Place this file alongside your <code>todo.txt</code> in <code>~/Documents/todo/</code> and run:</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>show-links.py
+</code></pre></div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Правая колонка: Компактное Git-Branch оглавление (3 колонки) -->
+    <div class="col-12 col-md-3 order-1 order-md-2 mb-4">
+        <div class="toc-sidebar custom-card">
+            <!-- Блок-якорь оглавления -->
+            <div class="toc-title"><i class="bi bi-list-nested me-2"></i>On This Page</div>
+            
+            <!-- Выводим рекурсивное иерархическое дерево оглавления -->
+            <div class="toc">
+<ul>
+<li><a href="#why-this-matters">Why This Matters</a></li>
+<li><a href="#data-architecture">Data Architecture</a><ul>
+<li><a href="#task-the-task-model">Task — The Task Model</a></li>
+<li><a href="#rnote-note-hierarchy">RNote — Note Hierarchy</a></li>
+<li><a href="#dependency-graph">Dependency Graph</a></li>
+</ul>
+</li>
+<li><a href="#visualization-two-modes">Visualization: Two Modes</a><ul>
+<li><a href="#tree-mode">Tree Mode</a></li>
+<li><a href="#day-mode">Day Mode</a></li>
+</ul>
+</li>
+<li><a href="#color-palette-and-rich">Color Palette and Rich</a><ul>
+<li><a href="#color-scheme">Color Scheme</a></li>
+<li><a href="#rendering-with-tag-highlighting">Rendering with Tag Highlighting</a></li>
+<li><a href="#markdown-in-notes">Markdown in Notes</a></li>
+</ul>
+</li>
+<li><a href="#navigation-and-control">Navigation and Control</a><ul>
+<li><a href="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
+<li><a href="#key-reading">Key Reading</a></li>
+</ul>
+</li>
+<li><a href="#filtering-and-search">Filtering and Search</a><ul>
+<li><a href="#text-search">Text Search</a></li>
+<li><a href="#building-branch-from-line">Building Branch from Line</a></li>
+</ul>
+</li>
+<li><a href="#interesting-technical-details">Interesting Technical Details</a><ul>
+<li><a href="#tree-flattening-for-display">Tree Flattening for Display</a></li>
+<li><a href="#handling-ansi-codes">Handling ANSI Codes</a></li>
+</ul>
+</li>
+<li><a href="#conclusions">Conclusions</a></li>
+</ul>
+</div>
+
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Динамическое имя в футере -->
+    <footer class="text-center text-muted py-4 border-top mt-5 bg-white">
+        <p class="mb-0">© 2026 Vladimir Shevchenko. Built with Python & SQLite.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Место для кастомных скриптов отдельных страниц -->
+    
+</body>
+</html>
