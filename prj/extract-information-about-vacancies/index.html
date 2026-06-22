@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract information about vacancies - Portfolio</title>
+    
+    <!-- Базовые мета-теги SEO -->
+    <meta name="description" content="Vladimir Shevchenko - Data Analyst & IT Specialist portfolio and resume. Experience in automation, reporting, and risk analytics.">
+    <meta name="author" content="Vladimir Shevchenko">
+
+    <!-- Open Graph (Превью для Telegram, LinkedIn и др.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Extract information about vacancies">
+    <meta property="og:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta property="og:image" content="../..//assets/about/profile.jpg">
+    <meta property="og:site_name" content="Vladimir Shevchenko Portfolio">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Extract information about vacancies">
+    <meta name="twitter:description" content="Data analyst and IT specialist with strong experience in process automation, reporting systems, and risk analytics.">
+    <meta name="twitter:image" content="../..//assets/about/profile.jpg">
+
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Стили подсветки синтаксиса и кастомные стили -->
+    <link href="../..//assets/pygments.css" rel="stylesheet">
+    <link href="../..//assets/style.css" rel="stylesheet">
+    
+    <!-- Место для кастомных стилей отдельных страниц -->
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- Динамическое имя в бренде навигационной панели -->
+            <a class="navbar-brand fw-bold" href="../../">Vladimir Shevchenko</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../">Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../..//it-help">IT Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mb-5">
+        
+
+<div class="row">
+    <!-- Левая колонка: Основной текст статьи (9 колонок) -->
+    <div class="col-12 col-md-9 order-2 order-md-1">
+        <article class="custom-card">
+            <!-- Заголовок страницы -->
+            <h1 class="article-main-title mb-3">Extract information about vacancies</h1>
+            <hr class="article-title-divider mb-4">
+            
+            <div class="article-content">
+                <p>This code demonstrates how to programmatically extract information about job vacancies from <a href="https://hh.ru/">hh.ru</a>. The script scans the primary search results page, iterates through aggregated vacancies, navigates to each individual job posting, and selectively extracts relevant data points like salary, title, and required tech stacks</p>
+<p><img alt="Preview" src="../..//assets/../..//assets/extract-information-about-vacancies/preview.avif" /></p>
+<h1 id="imports-and-setup">Imports and Setup</h1>
+<p>The core libraries for this parsing task are:<br />
+1. <strong>requests</strong>: Handles the HTTP requests to communicate with the website and download the raw HTML.<br />
+2. <strong>bs4 (BeautifulSoup)</strong>: An HTML parsing tool that traverses the raw HTML DOM string returned by <code>requests</code>, allowing us to search for specific tags and classes.<br />
+3. <strong>polars</strong>: High-performance data manipulation to store and prepare the scraped data.<br />
+4. <strong>xlsxwriter</strong>: Exports our final Polars DataFrame to a styled Excel spreadsheet.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xlsxwriter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># 1. Initialize an empty Polars DataFrame defining the schema of our output</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>                             
+    <span class="s2">&quot;URL&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Utf8</span><span class="p">),</span>
+    <span class="s2">&quot;Вакансия&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Utf8</span><span class="p">),</span>
+    <span class="s2">&quot;Зарплата&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Int64</span><span class="p">),</span>
+    <span class="s2">&quot;Keyword&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Utf8</span><span class="p">),</span>
+    <span class="s2">&quot;Tags&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Utf8</span><span class="p">)</span>
+<span class="p">})</span>                                              
+
+<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;excel&quot;</span> 
+
+<span class="c1"># 2. Construct the root URL based on manual website filters. </span>
+<span class="c1"># Changing filters via the UI, appending the desired parameters to this string.</span>
+<span class="n">start_url</span> <span class="o">=</span> <span class="s2">&quot;https://hh.ru/search/vacancy?experience=between1And3&quot;</span> \
+    <span class="s2">&quot;&amp;order_by=publication_time&amp;ored_clusters=true&quot;</span> \
+    <span class="sa">f</span><span class="s2">&quot;&amp;schedule=remote&amp;text=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&amp;search_period=7&quot;</span>                  
+
+<span class="n">url</span> <span class="o">=</span> <span class="n">start_url</span>                 
+
+<span class="c1"># 3. Define custom headers to simulate a legitimate browser request.</span>
+<span class="c1"># Websites often block requests utilizing default python-requests user agents.</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>                     
+    <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s2">&quot;Mozilla/5.0 (Windows NT 11.0; Win64; x64) &quot;</span> \
+                  <span class="s2">&quot;AppleWebKit/538.33 (KHTML, like Gecko) Chrome/98.0.4472.124 Safari/537.36&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept-Language&quot;</span><span class="p">:</span> <span class="s2">&quot;ru-RU,ru;q=0.9&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;gzip, deflate, br&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Connection&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-alive&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Upgrade-Insecure-Requests&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># 4. Define specific keywords or technologies to scan for within the vacancy descriptions.</span>
+<span class="n">keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BPMN&quot;</span><span class="p">,</span> <span class="s2">&quot;Jira&quot;</span><span class="p">]</span>     
+</code></pre></div>
+
+<h2 id="validating-extracted-pages">Validating Extracted Pages</h2>
+<p>Modern web pages are complicated, and scraping requests occasionally return incomplete or broken domestic DOM trees (due to server load). This function attempts to re-fetch a page up to 9 times if the core structural identifiers (like the <code>vacancy-title</code> container) fail to render.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_correctly</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>         
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> 
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span> 
+
+        <span class="c1"># We designate the &#39;vacancy-title&#39; div as our proof of a successful, complete load</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;vacancy-title&#39;</span><span class="p">})</span> 
+
+        <span class="k">if</span> <span class="n">header</span><span class="p">:</span>                                            
+            <span class="c1"># If successful, pass the soup context to the extraction function</span>
+            <span class="n">visit_and_check</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">soup</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>             
+            <span class="k">break</span>
+</code></pre></div>
+
+<h2 id="extracting-the-job-profile">Extracting the Job Profile</h2>
+<p>This function dissects the specific job posting, scraping the title, salary, skills, and checking for our pre-defined keywords. </p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">visit_and_check</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">soup</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">df</span>                     
+
+    <span class="n">fkeys</span> <span class="o">=</span> <span class="p">[]</span>                    
+
+    <span class="c1"># Scan the raw text of the entire response for our predefined keywords</span>
+    <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>      
+        <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span> 
+            <span class="n">fkeys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>      
+
+    <span class="c1"># Extract distinct skill tags located at the bottom of the vacancy page</span>
+    <span class="n">skill_elements</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data-qa&#39;</span><span class="p">:</span> <span class="s1">&#39;skills-element&#39;</span><span class="p">})</span> 
+    <span class="n">skills</span> <span class="o">=</span> <span class="p">[</span><span class="n">li</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;magritte-tag__label&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">skill_elements</span><span class="p">]</span> 
+
+    <span class="c1"># Extract Title Container</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;vacancy-title&#39;</span><span class="p">})</span> 
+    <span class="n">title</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>                        
+
+    <span class="c1"># Salary Extraction Logic</span>
+    <span class="c1"># Often salaries contain ranges, words, or are omitted entirely.</span>
+    <span class="n">salary_str</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data-qa&#39;</span><span class="p">:</span> <span class="s1">&#39;vacancy-salary-compensation-type-net&#39;</span><span class="p">})</span> 
+
+    <span class="k">if</span> <span class="n">salary_str</span><span class="p">:</span>                
+        <span class="c1"># Regex to strip out currency symbols, whitespace (\xa0), and words, catching the first integer</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">salary_str</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> 
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">salary</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">salary</span> <span class="o">=</span> <span class="kc">None</span>           
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">salary</span> <span class="o">=</span> <span class="kc">None</span>               
+
+    <span class="c1"># Vertically stack the newly parsed vacancy into our global dataframe</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>    
+        <span class="s2">&quot;URL&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">url</span><span class="p">],</span>                  
+        <span class="s2">&quot;Вакансия&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="n">title</span><span class="p">],</span>          
+        <span class="s2">&quot;Зарплата&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="n">salary</span><span class="p">],</span>         
+        <span class="s2">&quot;Keyword&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fkeys</span><span class="p">)],</span> 
+        <span class="s2">&quot;Tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skills</span><span class="p">)]</span>
+    <span class="p">}))</span> 
+</code></pre></div>
+
+<h1 id="iterating-over-the-search-results">Iterating over the Search Results</h1>
+<p>This loop controls the pagination across the main search results. It iterates over the pages, extracts the individual vacancy URLs sequentially, and hands them off to the validation and extraction functions above.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Iterate through the first 9 pages of search results</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>              
+    <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Construct the URL for the next paginated slice</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">start_url</span><span class="si">}</span><span class="s1">&amp;page=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- Page </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2"> --- --- ---&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The 9-iteration retry loop for the primary search page layout</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>          
+        <span class="c1"># Crucial: Pause execution to avoid DDoS-ing the target server and risking an IP ban</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>           
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- --- --- Iteration </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> 
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span> 
+
+        <span class="c1"># We ensure the root aggregate DOM wrapper (h2 tags in this case) has successfully loaded</span>
+        <span class="k">if</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;h2&#39;</span><span class="p">):</span>                            
+            <span class="k">for</span> <span class="n">h2</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;h2&#39;</span><span class="p">):</span>                 
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">h2</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>      
+                    <span class="c1"># Convert the potentially relative URL inside the href attribute to a full absolute URL</span>
+                    <span class="n">absolute_url</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">])</span> 
+
+                    <span class="c1"># Offload the specific job scraping flow</span>
+                    <span class="n">check_correctly</span><span class="p">(</span><span class="n">absolute_url</span><span class="p">)</span> 
+
+            <span class="c1"># Break the retry loop once we successfully process all vacancies on this page </span>
+            <span class="k">break</span>                                 
+</code></pre></div>
+
+<h3 id="exporting-to-excel">Exporting to Excel</h3>
+<p>After populating the global Polars DataFrame, we can dump the contents into a cleanly formatted <code>.xlsx</code> workbook utilizing python's <code>xlsxwriter</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">wb</span> <span class="o">=</span> <span class="n">xlsxwriter</span><span class="o">.</span><span class="n">Workbook</span><span class="p">(</span><span class="s1">&#39;Output.xlsx&#39;</span><span class="p">)</span>    
+<span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="s1">&#39;DF&#39;</span><span class="p">)</span>                
+
+<span class="c1"># Utilize Polars native excel serialization with formatting options</span>
+<span class="n">df</span><span class="o">.</span><span class="n">write_excel</span><span class="p">(</span>                            
+    <span class="n">workbook</span><span class="o">=</span><span class="n">wb</span><span class="p">,</span>  
+    <span class="n">worksheet</span><span class="o">=</span><span class="s1">&#39;DF&#39;</span><span class="p">,</span>  
+    <span class="n">position</span><span class="o">=</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span>  
+    <span class="n">table_style</span><span class="o">=</span><span class="s2">&quot;Table Style Medium 3&quot;</span><span class="p">,</span>  
+    <span class="n">dtype_formats</span><span class="o">=</span><span class="p">{</span><span class="n">pl</span><span class="o">.</span><span class="n">Date</span><span class="p">:</span> <span class="s2">&quot;mm/dd/yyyy&quot;</span><span class="p">},</span>  
+    <span class="n">column_totals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">},</span>  
+    <span class="n">float_precision</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  
+    <span class="n">autofit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  
+<span class="p">)</span>  
+
+<span class="c1"># Manually override the widths of specific columns for readability</span>
+<span class="n">ws</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s1">&#39;A:A&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  
+<span class="n">ws</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s1">&#39;B:B&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span> 
+<span class="n">ws</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s1">&#39;C:C&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> 
+<span class="n">ws</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s1">&#39;D:D&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> 
+<span class="n">ws</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s1">&#39;E:E&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span> 
+
+<span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+</code></pre></div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Правая колонка: Компактное Git-Branch оглавление (3 колонки) -->
+    <div class="col-12 col-md-3 order-1 order-md-2 mb-4">
+        <div class="toc-sidebar custom-card">
+            <!-- Блок-якорь оглавления -->
+            <div class="toc-title"><i class="bi bi-list-nested me-2"></i>On This Page</div>
+            
+            <!-- Выводим рекурсивное иерархическое дерево оглавления -->
+            <div class="toc">
+<ul>
+<li><a href="#imports-and-setup">Imports and Setup</a><ul>
+<li><a href="#validating-extracted-pages">Validating Extracted Pages</a></li>
+<li><a href="#extracting-the-job-profile">Extracting the Job Profile</a></li>
+</ul>
+</li>
+<li><a href="#iterating-over-the-search-results">Iterating over the Search Results</a><ul>
+<li><a href="#exporting-to-excel">Exporting to Excel</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Динамическое имя в футере -->
+    <footer class="text-center text-muted py-4 border-top mt-5 bg-white">
+        <p class="mb-0">© 2026 Vladimir Shevchenko. Built with Python & SQLite.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Место для кастомных скриптов отдельных страниц -->
+    
+</body>
+</html>

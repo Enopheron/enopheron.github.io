@@ -1,0 +1,712 @@
+/* ==========================================================================
+   БАЗОВЫЕ СТИЛИ ВЕБ-САЙТА (Интерфейс на экране)
+   ========================================================================== */
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+}
+
+/* Карточки резюме и проектов */
+.custom-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+/* Базовая разметка заголовков карточек */
+.custom-card h1 { font-size: 1.75rem; font-weight: 700; color: #2c3e50; }
+.custom-card h2 { 
+    font-size: 1.4rem; 
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+.custom-card h3 { font-size: 1.22rem; font-weight: 600; color: #2c3e50; }
+.custom-card h4 { font-size: 1.05rem; font-weight: 600; color: #495057; }
+.custom-card h5 { font-size: 0.88rem; font-weight: 500; color: #6c757d; }
+
+.print-contacts,
+.print-only {
+    display: none !important;
+}
+
+/* Тонкий серый таймлайн вакансий */
+.timeline-item {
+    border-left: 2px solid #dee2e6;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.achievement-list {
+    padding-left: 1.2rem;
+}
+
+.achievement-list li {
+    margin-bottom: 0.5rem;
+}
+
+/* Таблицы в Markdown */
+table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 0.6rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+table th {
+    border-bottom: 2px solid #495057;
+}
+
+/* Оформление инлайн-кода */
+code {
+    font-family: 'JetBrainsMono NF', 'Fira Code', 'Courier New', monospace;
+    color: #60933B !important;
+    background-color: #f4f6f4 !important;   
+    border: 1px solid #e1e5e1 !important;   
+    padding: 0.15rem 0.35rem;
+    border-radius: 6px;
+}
+
+/* Общий контейнер подсветки кода Pygments */
+.codehilite {
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+/* Блок pre (многострочный код) наследует цвета от активной темы Pygments */
+pre {
+    background-color: inherit !important; 
+    color: inherit !important;            
+    padding: 1.2rem !important;
+    border-radius: 8px !important;
+    overflow-x: auto !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+    border: none !important;
+    margin-bottom: 0 !important;          
+}
+
+pre code {
+    color: inherit !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Теплые приглушенные бейджи-таблетки */
+.tech-badge, .date-badge {
+    background-color: #f4f3ef !important;
+    color: #212529 !important;
+    border: 1px solid #e4e3de !important;
+    font-size: 0.82em;
+    padding: 0.25rem 0.55rem;
+    border-radius: 12px;
+    display: inline-block;
+    text-decoration: none;
+    white-space: nowrap !important;
+}
+
+.tech-badge {
+    margin-right: 0.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.date-badge {
+    font-weight: 500;
+}
+
+/* Автоматическое масштабирование картинок внутри статей */
+.article-content img {
+    max-width: 100%;              
+    height: auto;                 
+    display: block;               
+    margin: 2rem auto;            
+    border-radius: 8px;           
+    border: 1px solid #dee2e6;    
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+}
+
+/* ==========================================================================
+   ТИПОГРАФИКА ВНУТРИ СТАТЕЙ (Секция чтения)
+   ========================================================================== */
+
+/* Главный заголовок статьи (Особый статус) */
+.article-main-title {
+    font-size: 2.3rem !important;
+    color: #1a365d !important;         
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+    text-align: center;
+    line-height: 1.2 !important;
+}
+
+.article-title-divider {
+    border-top: 3px solid #1a365d !important;
+    opacity: 0.85 !important;
+    margin-top: 0.6rem !important;
+}
+
+/* Заголовки внутри текста статьи */
+.article-content h1, 
+.article-content h2, 
+.article-content h3 {
+    color: #212529 !important;
+    font-weight: 700 !important;
+    margin-top: 2.6rem !important;
+    margin-bottom: 1.2rem !important;
+    line-height: 1.35 !important;
+}
+
+.article-content > h1:first-child,
+.article-content > h2:first-child,
+.article-content > h3:first-child {
+    margin-top: 0 !important;
+}
+
+.article-content h1, 
+.article-content h2 {
+    border-bottom: 1px solid #e9ecef !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.article-content h1 { font-size: 1.7rem !important; }
+.article-content h2 { font-size: 1.45rem !important; }
+.article-content h3 { font-size: 1.25rem !important; margin-top: 2.2rem !important; }
+
+.article-content h4 {
+    color: #495057 !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    margin-top: 1.8rem !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.article-content p {
+    line-height: 1.65;
+    margin-bottom: 1.3rem;
+    color: #333333;
+}
+
+.article-content ul, 
+.article-content ol {
+    margin-bottom: 1.3rem;
+    padding-left: 1.8rem;
+}
+
+.article-content li {
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   КОМПАКТНАЯ GIT-BRANCH НАВИГАЦИЯ (TOC SIDEBAR)
+   ========================================================================== */
+.toc-sidebar {
+    position: sticky;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto; /* Оригинальный скролл всей карточки */
+}
+
+.toc-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    color: #212529;   
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #212529; 
+    padding-bottom: 0.5rem;
+}
+
+.toc-sidebar .toc ul {
+    list-style-type: none;
+    padding-left: 1rem; 
+    position: relative;
+    margin-bottom: 0;
+}
+
+.toc-sidebar .toc > ul {
+    padding-left: 0.2rem;
+}
+
+.toc-sidebar .toc li {
+    position: relative;
+    padding-left: 1rem; 
+    margin-bottom: 0.4rem;
+}
+
+.toc-sidebar .toc li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -0.3rem;
+    bottom: 0;
+    border-left: 1px solid #dee2e6; 
+}
+
+.toc-sidebar .toc li::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6rem;                       
+    width: 0.6rem;                     
+    height: 0.4rem;
+    border-bottom: 1px solid #dee2e6;  
+}
+
+.toc-sidebar .toc li:last-child::before {
+    height: 0.9rem; 
+    bottom: auto;
+}
+
+.toc-sidebar .toc a {
+    color: #495057;
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: block;
+    padding: 0.15rem 0;
+    transition: all 0.15s ease;
+}
+
+.toc-sidebar .toc a:hover {
+    color: #0d6efd;
+    padding-left: 0.2rem;
+}
+
+/* Адаптивное поведение TOC-сайдбара на мобильных устройствах */
+@media (max-width: 767.98px) {
+    .toc-sidebar {
+        position: static !important; /* Убираем липкость карточки на мобильных */
+        max-height: 220px !important; /* Нативная прокрутка */
+        overflow-y: auto !important;
+        margin-bottom: 1.5rem !important;
+    }
+}
+
+/* ==========================================================================
+   ФИЛЬТРАЦИЯ ТЕГОВ (PROJECTS HUB)
+   ========================================================================== */
+.filter-sidebar {
+    position: sticky;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+}
+
+.filter-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.4rem;
+}
+
+/* Скролл-бокс для ограничения высоты списка тегов на ПК и мобильных */
+#tag-cloud {
+    max-height: 180px; /* Вмещает около 5-6 тегов, далее уходит в прокрутку */
+    overflow-y: auto;
+    padding-right: 0.3rem;
+}
+
+.filter-sidebar .tag-button {
+    display: block; 
+    width: 100%;
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.3rem;
+    background-color: transparent !important; 
+    color: #495057 !important; 
+    border: none !important;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.9em;
+    border-radius: 4px;
+}
+
+.filter-sidebar .tag-button:hover {
+    background-color: #f0f2f5 !important; 
+    color: #212529 !important;
+}
+
+.filter-sidebar .tag-button.active {
+    background-color: #212529 !important; 
+    color: #ffffff !important;            
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   МИНИМАЛИСТИЧНЫЕ ПОЛОСЫ ПРОКРУТКИ ДЛЯ ВНУТРЕННИХ БЛОКОВ (Webkit)
+   ========================================================================== */
+#tag-cloud::-webkit-scrollbar,
+.toc-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+#tag-cloud::-webkit-scrollbar-track,
+.toc-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#tag-cloud::-webkit-scrollbar-thumb,
+.toc-sidebar::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 4px;
+}
+
+#tag-cloud::-webkit-scrollbar-thumb:hover,
+.toc-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+}
+
+/* ==========================================================================
+   ОПТИМИЗАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ СМАРТФОНОВ
+   ========================================================================== */
+@media (max-width: 575.98px) {
+    /* Сужаем внутренние поля карточек для увеличения полезной ширины */
+    .custom-card {
+        padding: 1.25rem !important;
+    }
+
+    /* Сокращаем отступ линии таймлайна на мобильных устройствах */
+    .timeline-item {
+        padding-left: 0.8rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Уменьшаем отступ списков достижений для экономии пространства */
+    .achievement-list {
+        padding-left: 1rem !important;
+    }
+}
+
+/* ==========================================================================
+   СТИЛИ ДЛЯ ПЕЧАТИ (Оптимизировано для PDF-экспорта резюме на 1 лист)
+   ========================================================================== */
+/* ==========================================================================
+   СТИЛИ ДЛЯ ПЕЧАТИ (Оптимизировано для PDF-экспорта резюме на 1 лист)
+   ========================================================================== */
+@media print {
+    @page {
+        margin: 0.5cm;
+    }
+
+    html, body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 8pt !important; /* ЕДИНЫЙ размер для всего основного текста */
+        line-height: 1.25 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    nav, footer, .d-flex.justify-content-end, .toc-sidebar, .filter-sidebar,
+    .navbar-toggler, .btn, .d-print-none {
+        display: none !important;
+    }
+
+    .container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .row {
+        display: grid !important;
+        grid-template-columns: 32% 50% 12% !important;
+        column-gap: 2% !important;
+        row-gap: 0.5rem !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .col-12.col-md-8, .col-12.col-md-4 {
+        display: contents !important;
+    }
+
+    /* ==========================================================================
+       ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ БЛОКОВ (КАРТОЧЕК) И ИХ ЗАГОЛОВКОВ
+       ========================================================================== */
+    .custom-card {
+        background: #ffffff !important;
+        border: 1px solid #e9ecef !important; 
+        border-radius: 6px !important;       
+        padding: 0.5rem 0.7rem !important;   
+        margin-bottom: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-shadow: none !important;         
+    }
+
+    /* Принудительно выравниваем ВСЕ заголовки блоков (h2, h4) и их значки (i) */
+    .custom-card h2, 
+    .custom-card h4 {
+        font-size: 9.5pt !important;    /* Единый размер шрифта для названий секций */
+        font-weight: 700 !important;
+        color: #000000 !important;
+        margin-bottom: 0.3rem !important;
+        padding-bottom: 0.15rem !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Единый размер для всех иконок в заголовках */
+    .custom-card h2 i, 
+    .custom-card h4 i {
+        font-size: 10pt !important;    /* Иконки теперь везде одинаковые */
+        margin-right: 0.4rem !important;
+    }
+
+    /* Сбрасываем уменьшения шрифтов Bootstrap (.small, .text-muted), чтобы текст везде был 8pt */
+    .custom-card p, 
+    .custom-card span, 
+    .custom-card li, 
+    .custom-card div,
+    .text-muted, 
+    .small {
+        font-size: 8pt !important; 
+        color: #000000 !important;
+    }
+
+    /* ==========================================================================
+       ПОРЯДОК СОРТИРОВКИ БЛОКОВ НА ПЕЧАТИ
+       ========================================================================== */
+
+    /* 1. Summary (Включаем и ставим над опытом) */
+    .col-12.col-md-8 .custom-card:nth-child(1) {
+        display: block !important;
+        grid-column: 1 / -1 !important; 
+        order: 5 !important; 
+    }
+
+    /* 2. Шапка Профиль (Колонка 1) */
+    .col-12.col-md-4 .custom-card:nth-child(1) {
+        grid-column: 1 !important;
+        order: 1 !important;
+        text-align: left !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.6rem !important;
+    }
+
+    .rounded-circle {
+        width: 65px !important;
+        height: 65px !important;
+        margin: 0 !important;
+        display: block !important;
+        flex-shrink: 0 !important;
+    }
+
+    .profile-details {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.1rem !important;
+    }
+
+    .profile-details h4 {
+        border: none !important; /* Убираем черту под именем */
+        margin: 0 0 0.1rem 0 !important;
+        padding: 0 !important;
+        font-size: 11pt !important; /* Имя оставляем чуть крупнее */
+    }
+
+    .profile-details p.subtitle-p,
+    .col-12.col-md-4 .custom-card:nth-child(1) p {
+        display: none !important;
+    }
+
+    .contact-links {
+        display: none !important;
+    }
+
+    .print-contacts,
+    .print-only {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.1rem !important;
+    }
+
+    .print-contacts span,
+    .print-only-contacts span {
+        font-size: 7.5pt !important; /* Контакты чуть компактнее основного текста */
+    }
+
+    /* 3. Education в шапке (Колонка 2) */
+    .col-12.col-md-4 .custom-card:nth-child(3) {
+        grid-column: 2 !important;
+        order: 2 !important;
+    }
+    
+    .col-12.col-md-4 .custom-card:nth-child(3) h5 {
+        font-size: 8pt !important;
+        font-weight: bold !important;
+        margin-bottom: 0.1rem !important;
+    }
+
+    /* 4. QR-код в шапке (Колонка 3) */
+    .col-12.col-md-4 .custom-card:nth-child(5).qr-card {
+        grid-column: 3 !important;
+        order: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.3rem !important; 
+    }
+
+    .col-12.col-md-4 .custom-card:nth-child(5).qr-card img {
+        width: 50px !important; 
+        height: 50px !important;
+        margin-bottom: 0.1rem !important;
+    }
+
+    .col-12.col-md-4 .custom-card:nth-child(5).qr-card .qr-label {
+        font-size: 6pt !important;
+        font-weight: bold !important;
+    }
+
+    /* 5. Quick Info (Строка под шапкой слева) */
+    .col-12.col-md-4 .custom-card:nth-child(2) {
+        grid-column: 1 !important;
+        order: 4 !important;
+    }
+
+    /* 6. Languages (Строка под шапкой справа) */
+    .col-12.col-md-4 .custom-card:nth-child(4) {
+        grid-column: 2 / span 2 !important;
+        order: 4 !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-content: flex-start !important;
+    }
+
+    .col-12.col-md-4 .custom-card:nth-child(4) h4 {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+
+    .col-12.col-md-4 .custom-card:nth-child(4) > div {
+        flex: 0 0 48% !important;
+        width: 48% !important;
+        margin-bottom: 0.2rem !important;
+        margin-right: 4% !important;
+    }
+
+    .col-12.col-md-4 .custom-card:nth-child(4) > div:nth-of-type(2n) {
+        margin-right: 0 !important;
+    }
+
+    /* 7. Опыт работы (В самый низ на всю ширину) */
+    .col-12.col-md-8 .custom-card:nth-child(2) {
+        grid-column: 1 / -1 !important;
+        order: 6 !important;
+    }
+
+    .timeline-item {
+        border-left: 1px solid #dee2e6 !important;
+        padding-left: 0.8rem !important; 
+        margin-bottom: 0.4rem !important;
+    }
+    .timeline-item {
+        border-left: 1px solid #dee2e6 !important;
+        padding-left: 0.8rem !important; 
+        margin-bottom: 0.9rem !important; /* Увеличили отступ, чтобы места работы не шли вплотную */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0 !important; /* Для последнего места работы отступ обнуляем */
+    }
+
+    .timeline-item h4 {
+        border-bottom: none !important; /* Убираем черту под должностью внутри таймлайна */
+        font-size: 8.5pt !important;   /* Должность внутри вакансии */
+        margin-bottom: 0.1rem !important;
+        padding-bottom: 0 !important;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    .achievement-list {
+        margin-bottom: 0.1rem !important;
+    }
+
+    .achievement-list li {
+        margin-bottom: 0.1rem !important;
+    }
+
+    .tech-badge, .date-badge {
+        background-color: #f4f3ef !important; 
+        font-size: 6.5pt !important; /* Информационные бейджи чуть меньше общего текста */
+        padding: 0.15rem 0.4rem !important;  
+        border-radius: 10px !important;       
+        margin-right: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .col-12.col-md-4 ul {
+        display: block !important;
+    }
+
+    .progress {
+        border: 1px solid #cccccc !important;
+        background-color: #f8f9fa !important;
+        height: 4px !important; 
+        print-color-adjust: exact !important;          
+        -webkit-print-color-adjust: exact !important;   
+    }
+    
+    .progress-bar {
+        background-color: #555555 !important;           
+        print-color-adjust: exact !important;          
+        -webkit-print-color-adjust: exact !important;   
+    }
+    /* 8. Блок рекомендаций (В самый подвал страницы) */
+    .col-12.col-md-8 .custom-card:nth-child(3) {
+        display: block !important;
+        grid-column: 1 / -1 !important;
+        order: 7 !important; /* Встает строго под опытом работы */
+        margin-top: 0.4rem !important;
+    }
+
+    /* Оптимизация сетки внутри рефералов специально для печати */
+    .print-row-compact {
+        display: flex !important;
+        flex-direction: row !important; /* На бумаге выстроит двух людей в две аккуратные колонки рядом */
+        justify-content: space-between !important;
+        width: 100% !important;
+        margin: 0 !important;
+        gap: 1rem !important;
+    }
+
+    .print-row-compact > div {
+        flex: 1 !important;
+    }
+}
